@@ -1,0 +1,11 @@
+--- src/src/tbb/tools_api/ittnotify_config.h	2025-01-06 23:06:11.664393121 +0800
++++ src/src/tbb/tools_api/ittnotify_config.h	2025-01-06 23:04:49.256523961 +0800
+@@ -323,7 +323,7 @@
+ #ifdef __INTEL_COMPILER
+ #define __TBB_machine_fetchadd4(addr, val) __fetchadd4_acq((void *)addr, val)
+ #else  /* __INTEL_COMPILER */
+-/* TODO: Add Support for not Intel compilers for IA-64 architecture */
++#define __TBB_machine_fetchadd4(addr, val) __sync_fetch_and_add(addr, val)
+ #endif /* __INTEL_COMPILER */
+ #elif ITT_ARCH==ITT_ARCH_IA32 || ITT_ARCH==ITT_ARCH_IA32E /* ITT_ARCH!=ITT_ARCH_IA64 */
+ ITT_INLINE long

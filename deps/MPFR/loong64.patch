@@ -1,0 +1,22 @@
+--- config.sub	2025-01-06 22:44:01.729843258 +0800
++++ config.sub	2025-01-06 22:48:35.090444511 +0800
+@@ -356,6 +356,9 @@
+ 	xscaleel)
+ 		basic_machine=armel-unknown
+ 		;;
++    loongarch64-pc)
++		basic_machine=loongarch64-pc
++	    ;;
+ 
+ 	# We use `pc' rather than `unknown'
+ 	# because (1) that's what they normally are, and
+@@ -1332,6 +1335,9 @@
+ 	pmac | pmac-mpw)
+ 		basic_machine=powerpc-apple
+ 		;;
++    loongarch64-pc)
++		basic_machine=loongarch64-pc
++	    ;;
+ 	*-unknown)
+ 		# Make sure to match an already-canonicalized machine name.
+ 		;;
