@@ -3,6 +3,8 @@
 #include <dlfcn.h>
 #include <boost/format.hpp>
 #include <boost/log/trivial.hpp>
+#include <rpc/server.h>
+#include <string>
 
 #include "../slic3r/Utils/NetworkAgent.hpp"
 
@@ -501,12 +503,18 @@ int unload_network_module()
 }
 }
 
-void sayHello() {
+void test() {
     BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << boost::format(", hello");
     Slic3r::initialize_network_module(false);
+    rpc::server srv(8081);
+    srv.bind("get_version_ptr", Slic3r::get_version_ptr);
+    srv.bind("check_debug_consistent_ptr", Slic3r::check_debug_consistent_ptr);
+    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << boost::format(", function registed");
+    srv.run();
 }
 
 int main() {
-    sayHello();
+    set_data_dir(std::string(std::getenv("HOME")) + "/.config/BambuStudioInternal");
+    test();
     return 0;
 }

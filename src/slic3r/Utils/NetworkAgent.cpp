@@ -7,6 +7,7 @@
 #endif
 
 #include <boost/log/trivial.hpp>
+#include <rpc/client.h>
 #include "libslic3r/Utils.hpp"
 #include "NetworkAgent.hpp"
 
@@ -129,6 +130,7 @@ func_get_model_mall_rating_result   NetworkAgent::get_model_mall_rating_result_p
 
 func_get_mw_user_preference         NetworkAgent::get_mw_user_preference_ptr = nullptr;
 func_get_mw_user_4ulist             NetworkAgent::get_mw_user_4ulist_ptr     = nullptr;
+std::shared_ptr<rpc::client>        rpc_client = nullptr;
 
 NetworkAgent::NetworkAgent(std::string log_dir)
 {
@@ -342,6 +344,12 @@ int NetworkAgent::initialize_network_module(bool using_backup)
     get_mw_user_preference_ptr = reinterpret_cast<func_get_mw_user_preference>(get_network_function("bambu_network_get_mw_user_preference"));
     get_mw_user_4ulist_ptr     = reinterpret_cast<func_get_mw_user_4ulist>(get_network_function("bambu_network_get_mw_user_4ulist"));
 
+    try {
+        rpc_client = std::make_shared<rpc::client>("127.0.0.1", 8081);
+    } catch (std::exception& e){
+        BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << boost::format(", can not connect to network_plugin_provider")%e.what();
+        return -1;
+    }
     return 0;
 }
 
@@ -545,9 +553,9 @@ std::string NetworkAgent::get_version()
     //check the debug consistent first
     if (check_debug_consistent_ptr) {
 #if defined(NDEBUG)
-        consistent = check_debug_consistent_ptr(false);
+        consistent = rpc_client->call("check_debug_consistent_ptr", false).as<bool>();
 #else
-        consistent = check_debug_consistent_ptr(true);
+        consistent = rpc_client->call("check_debug_consistent_ptr", true).as<bool>();
 #endif
     }
     if (!consistent) {
@@ -555,7 +563,7 @@ std::string NetworkAgent::get_version()
         return "00.00.00.00";
     }
     if (get_version_ptr) {
-        return get_version_ptr();
+        return rpc_client->call("get_version_ptr").as<std::string>();
     }
     BOOST_LOG_TRIVIAL(warning) << __FUNCTION__ << boost::format(", get_version not supported,return 00.00.00.00!");
     return "00.00.00.00";

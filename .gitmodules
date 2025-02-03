@@ -1,0 +1,6 @@
+[submodule "src/network-agent-provider/extern/rpclib"]
+	path = src/network-agent-provider/extern/rpclib
+	url = https://github.com/rpclib/rpclib.git
+[submodule "src/slic3r/extern/rpclib"]
+	path = src/slic3r/extern/rpclib
+	url = https://github.com/rpclib/rpclib.git

@@ -12,6 +12,8 @@ find_package(Boost 1.70 REQUIRED COMPONENTS
     atomic
 )
 
+add_subdirectory(extern/rpclib)
+
 add_executable(network_agent_provider
     NetworkAgentProvider.cpp
 )
@@ -29,4 +31,6 @@ target_link_libraries(network_agent_provider PRIVATE
     Boost::date_time
     Boost::chrono
     Boost::atomic
+    rpc
+    pthread
 )
