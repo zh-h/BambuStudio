@@ -239,8 +239,10 @@ if(MPFR_PKG)
   list(APPEND _OMC_DEPENDS ${MPFR_PKG})
 endif()
 
+# OMC's SIMD switches emit x86-only flags (-msse2/-mavx2/-mfma), so they must be
+# off on every non-x86 target: Apple Silicon as before, plus Linux/Windows ARM.
 set(_OMC_SIMD_ARGS "")
-if(APPLE)
+if(APPLE OR NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64|amd64)$")
   set(_OMC_SIMD_ARGS
     -DOMC_CMAKE_ENABLE_SSE2=OFF
     -DOMC_CMAKE_ENABLE_AVX=OFF

@@ -1,0 +1,48 @@
+# AOSC OS (https://aosc.io)
+# AOSC OS is dpkg/apt based and ships development headers together with the
+# main package (no separate -dev split), so availability is probed via pkg-config.
+
+FOUND_GTK3=$(pkg-config --exists gtk+-3.0 && pkg-config --modversion gtk+-3.0 || echo '')
+
+REQUIRED_DEV_PACKAGES=(
+    autoconf
+    automake
+    cairo
+    cmake
+    curl
+    dbus
+    extra-cmake-modules
+    file
+    gcc
+    gettext
+    git
+    glew
+    gstreamer
+    gtk-3
+    libsecret
+    libtool
+    libunwind
+    libxkbcommon
+    llvm
+    mesa
+    nasm
+    ninja
+    openssl
+    pkg-config
+    texinfo
+    wayland
+    wayland-protocols
+    wget
+    x264
+    yasm
+)
+
+if [[ -n "$UPDATE_LIB" ]]
+then
+    REQUIRED_DEV_PACKAGES+=(webkit2gtk)
+    sudo oma install -y ${REQUIRED_DEV_PACKAGES[@]}
+    echo -e "done\n"
+    exit 0
+fi
+
+FOUND_GTK3_DEV=$(pkg-config --exists gtk+-3.0 && pkg-config --modversion gtk+-3.0 || echo '')
