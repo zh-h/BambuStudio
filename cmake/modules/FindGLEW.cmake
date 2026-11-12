@@ -64,11 +64,19 @@ This module defines the following variables:
 
 include(FindPackageHandleStandardArgs)
 
-find_package(GLEW CONFIG QUIET)
+# The deps build installs a static GLEW (libGLEW.a / glew32s.lib) without any
+# CMake config package, so for static builds the library search below is the
+# intended path (it also adds the required GLEW_STATIC define). Skip CONFIG
+# mode there: a distro-provided glew-config.cmake may export only the shared
+# target GLEW::glew (e.g. AOSC OS / Debian), and loading it with
+# GLEW_USE_STATIC_LIBS=ON hard-errors on the missing GLEW::glew_s target.
+if(NOT GLEW_USE_STATIC_LIBS)
+  find_package(GLEW CONFIG QUIET)
 
-if(GLEW_FOUND)
-  find_package_handle_standard_args(GLEW DEFAULT_MSG GLEW_CONFIG)
-  return()
+  if(GLEW_FOUND)
+    find_package_handle_standard_args(GLEW DEFAULT_MSG GLEW_CONFIG)
+    return()
+  endif()
 endif()
 
 if(GLEW_VERBOSE)
